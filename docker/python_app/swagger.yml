@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: AWS Instance Catalog
+  description: Information about AWS instances
+  version: 1.0.0
+servers:
+  - url: /api
+
+paths:
+  /instances:
+    get:
+      summary: Get all information about AWS instances
+      operationId: api.read_all
+      responses:
+        "200":
+          description: Successfully retrieved information about AWS instances
+    post:
+      summary: Create a new instance
+      operationId: api.create_instance
+      requestBody:
+        description: Create a new instance
+        content:
+          application/json:
+            schema:
+              x-body-name: instance
+              $ref: "#/components/schemas/Instance"
+      responses:
+        "201":
+          description: Successfully created
+        "409":
+          description: Instance with provided name already exists
+  /instances/{name}:
+    get:
+      summary: Read one instance
+      operationId: api.read_one_instance
+      parameters:
+        - $ref: "#/components/parameters/name"
+      responses:
+        "200":
+          description: Successfully read one instance
+    delete:
+      summary: Delete one instance
+      operationId: api.delete_instance
+      parameters:
+        - $ref: "#/components/parameters/name"
+      responses:
+        "200":
+          description: Successfully deleted instance
+        "404":
+          description: Instance does not exist
+    put:
+      summary: Update one instance
+      operationId: api.update_instance
+      parameters:
+        - $ref: "#/components/parameters/name"
+      requestBody:
+        description: Create a new instance
+        content:
+          application/json:
+            schema:
+              x-body-name: instance
+              $ref: "#/components/schemas/Instance"
+      responses:
+        "200":
+          description: Successfully updated instance information
+components:
+  schemas:
+    Instance:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        ami:
+          type: string
+        region:
+          type: string
+  parameters:
+    name:
+      name: name
+      description: Instance name
+      in: path
+      required: true
+      schema:
+        type: string
